@@ -42,15 +42,21 @@ I then used the output `objpoints` and `imgpoints` to compute the camera calibra
 
 #### 1. Provide an example of a distortion-corrected image.
 
-To demonstrate this step, I will describe how I apply the distortion correction to one of the test images like this one:
-![alt text](./outputs/test2_img.png)
+once we have camera calibration matrix and distortion matrix obtained from the camera calibration, then make a call to cv2.undistort to get undistorted image. 
+First read in an image, make a call to cv2.undistort. the image is either written to file or display in notebook as follows.
 
+![alt text](./outputs/test2_img.png)
+```
+img = cv2.imread('test_images/test2.jpg')
+dst = cv2.undistort(img, mtx, dist, None, mtx)
+cv2.imwrite('outputs/undis_calibration_test2.jpg',dst)
+```
 
 
 #### 2. Describe how you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
 I used a combination of S channel color and L channel x derivative gradient plus thresholds to generate a binary image.  
-The code is in the "cell" section of funcation name: ## binary_image_pipeline ## in final_notebook.ipynb
+The code is in the "cell" section of funcation name: ** binary_image_pipeline ** in final_notebook.ipynb
 
 * step 1, the image is converted to HLS color space
 * step 2, take the derivative in x on l_channel
@@ -64,50 +70,108 @@ Here's an example of my output for this step.  (note: this is not actually from 
 
 #### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 
-The code for my perspective transform includes a function called `warper()`, which appears in lines 1 through 8 in the file `example.py` (output_images/examples/example.py) (or, for example, in the 3rd code cell of the IPython notebook).  The `warper()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points.  I chose the hardcode the source and destination points in the following manner:
+The code for my perspective transform includes a function called `warper()` in the code cell of the IPython notebook starting ## "Following "warp" function" ## .  The `warper()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points.  I chose the hardcode the source and destination points in the following manner:
 
 ```python
 src = np.float32(
-    [[(img_size[0] / 2) - 55, img_size[1] / 2 + 100],
-    [((img_size[0] / 6) - 10), img_size[1]],
-    [(img_size[0] * 5 / 6) + 60, img_size[1]],
-    [(img_size[0] / 2 + 55), img_size[1] / 2 + 100]])
-dst = np.float32(
-    [[(img_size[0] / 4), 0],
-    [(img_size[0] / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), 0]])
+    [[577, 469],
+     [723, 469],
+     [329, 667],
+     [1081, 667]])
+dest = np.float32(
+     [[310, 0],
+      [950, 0],
+      [310, 667],
+     [950, 667]])
 ```
 
 This resulted in the following source and destination points:
 
 | Source        | Destination   | 
 |:-------------:|:-------------:| 
-| 585, 460      | 320, 0        | 
-| 203, 720      | 320, 720      |
-| 1127, 720     | 960, 720      |
-| 695, 460      | 960, 0        |
+| 577, 469      | 310, 0        | 
+| 723, 469      | 950, 0      |
+| 329, 667     | 310, 667      |
+| 1081, 667      | 950 , 667        |
+
+The src points are obtained by locating the four points on the picture. calculate the mouse point offset of 78 in "shift+command+4" on Mac
+The dest points are fixed around the two centers of histogram: 310 and 950
+The four dot are plot back on the original image. the warped image as show as well. 
 
 I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image.
 
-![alt text][image4]
+![source points](./outputs/warp_source_points.png)
 
-#### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
+Warped image:
+![warped](./outputs/warped.png)
 
-Then I did some other stuff and fit my lane lines with a 2nd order polynomial kinda like this:
+#### 4. Describe how you identified lane-line pixels and fit their positions with a polynomial?
 
-![alt text][image5]
+I implemented two lane finding algorithms from class materials and use them under conditions.
 
-#### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
+1. slide window based, which based on the histogram peak points to find out left and right lane x bases. it has 9 windows in height to search all the pixels has none zero from warped image. The center of search box is moving based on the average of x value of points. The function is found in cell: ##frame_lane_detect##
 
-I did this in lines # through # in my code in `my_other_file.py`
+2. prediction based on previous ploy fit parameters. The function is found at: frame_lane_detect_calc
+    This founction does not do the sliding window search on pixel for lane. instead, it use previous ploy fit parameter to predict the lane and search pixel to the lane center +/- margin 100 pixels.
+
+Two functions are called based on different conditions:
+   * if it is first frame or every 10 frames, then restart the window based lane search by calling frame_lane_detect
+   
+   * else for current frame, use the privous frame's ploy fit to search the pixels around prejected lane by calling frame_lane_detect_calc
+   
+![alt text](./outputs/frame715_lane_detection.png)
+
+
+#### 5. Describe how you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
+
+The function ** curverads_centeroff ** in final_notebook.ipynb is used to calculate the left and right curverads. 
+Curverads are calculated as following to get the real world number:
+   * 1. use the ploy fit coefficiencies to find the all pixel x locations
+   * 2. convert the pixel location to real world distance using following fomula:
+       * ym_per_pix = 30/720 # meters per pixel in y dimension
+       * xm_per_pix = 3.7/700 # meters per pixel in x dimension
+   * 3. use polyfit find real world (x, y) to ploynomials
+   * 4. use the fomular to calculate the center distance:
+   
+        ![image](./outputs/curverad_formula.png)
+
+The lane center offset is measured by the image center point on x axis minus the center point between two lanes.
+The calculated as follows:
+* center point of image on x axis = 1280/2 where 1280 is image width
+* center point between two lanes:
+    (left_fitx[-1]+right_fitx[-1])/2
+* multiply with pixel to real world distance ratio: xm_per_pix
+so the final fomula is:
+    lane_offset = (1280/2 - (left_fitx[-1]+right_fitx[-1])/2)*xm_per_pix
+
+if value is negative, then car offsets to right.
+if value is positive, then car offsets to left.
 
 #### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
-I implemented this step in lines # through # in my code in `yet_another_file.py` in the function `map_lane()`.  Here is an example of my result on a test image:
+I implemented this steps in the final_notebook.ipynb after ** following are testing code for each frame and debug problematic frame. the sequence is same as outlined pipeline_process_frame **:
 
-![alt text][image6]
+![alt text](./outputs/frame715_correct.jpg)
 
+#### 7. Here are the complete the steps to create the pipeline for each frame in video:
+
+Following function is in defined in cell in final_notebook.ipynb
+
+**pipeline_process_frame**(frame, mtx, dist, M, Minv, i):
+```
+
+    1. undistort the image based on the camera calibration matrix mtx, distortion matrix dist.
+    2. create binary image uses furction binary_image_pipeline with color transform and gradient x derivative
+    3. create warped image based on the persepective transform to get bird eye image
+    4. decide with algorithm to call to search lane for an image.
+        a) if it is first frame or every 10 frames, then restart the window based lane search by calling frame_lane_detect
+        b) else for current frame, use the privous frame's ploy fit search the pixels around prejected lane by calling
+    5. smooth the lane coefficiencies with past 10 records.
+    6. Warp the detected lane boundaries back onto the original image.
+    7. calculate the curverad for both left and right lane.
+    8. display the curverads and offset to original image.
+    9. return the final result image.
+```
 ---
 
 ### Pipeline (video)
@@ -123,3 +187,11 @@ Here's a [link to my video result](./project_video.mp4)
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
 Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+
+## histogram max will return an not pleasant lane location of x
+Noticed that right lane histogram peak actually is not the center of lane due to light lane on gound and cause the incorrect ploy fit. the right lane center is put back to start search.
+```
+if(rightx_base > 1100):
+        rightx_base = 950
+```
+origin frame 715 in video 
