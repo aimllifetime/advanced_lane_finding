@@ -52,12 +52,12 @@ To demonstrate this step, I will describe how I apply the distortion correction 
 I used a combination of S channel color and L channel x derivative gradient plus thresholds to generate a binary image.  
 The code is in the "cell" section of funcation name: ## binary_image_pipeline ## in final_notebook.ipynb
 
-*step 1, the image is converted to HLS color space
-*step 2, take the derivative in x on l_channel
-*step 3, normalize the pixel value into range of (0, 255)
-*step 4, apply the threshold of s_thresh(20, 100)
-*step 5, apply threshold(170, 255) on s_channel data
-*step 6, build combined color image where s_binary pixcel is of 1 or l_channel pixel is of 1
+* step 1, the image is converted to HLS color space
+* step 2, take the derivative in x on l_channel
+* step 3, normalize the pixel value into range of (0, 255)
+* step 4, apply the threshold of s_thresh(20, 100)
+* step 5, apply threshold(170, 255) on s_channel data
+* step 6, build combined color image where s_binary pixcel is of 1 or l_channel pixel is of 1
 
 Here's an example of my output for this step.  (note: this is not actually from one of the test images)
 ![alt text](./outputs/binary_image_pipeline.png)
