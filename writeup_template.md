@@ -50,7 +50,7 @@ To demonstrate this step, I will describe how I apply the distortion correction 
 #### 2. Describe how you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
 I used a combination of S channel color and L channel x derivative gradient plus thresholds to generate a binary image.  
-The code is in the "cell" section of funcation name: ## binary_image_pipeline ## in final_notebook.ipynb
+The code is in the "cell" section of funcation name: ** binary_image_pipeline ** in final_notebook.ipynb
 
 * step 1, the image is converted to HLS color space
 * step 2, take the derivative in x on l_channel
@@ -116,16 +116,11 @@ Two functions are called based on different conditions:
 ![alt text](./outputs/images1057.jpg)
 
 
-Noticed that right lane histogram peak actually is not the center of lane due to light lane on gound and cause the incorrect ploy fit. the right lane center is put back to start search.
-```
-if(rightx_base > 1100):
-        rightx_base = 950
-```
-origin frame 715 in video 
+
 
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
-I did this in lines # through # in my code in `my_other_file.py`
+
 
 #### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
@@ -148,3 +143,11 @@ Here's a [link to my video result](./project_video.mp4)
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
 Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+
+## histogram max will return an not pleasant lane location of x
+Noticed that right lane histogram peak actually is not the center of lane due to light lane on gound and cause the incorrect ploy fit. the right lane center is put back to start search.
+```
+if(rightx_base > 1100):
+        rightx_base = 950
+```
+origin frame 715 in video 
