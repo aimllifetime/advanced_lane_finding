@@ -176,9 +176,11 @@ Following function is in defined in cell in final_notebook.ipynb
 
 ### Pipeline (video)
 
-#### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
+#### 1. Provide a link to your final video output.  Pipeline should perform reasonably well on the entire project video.
 
-Here's a [link to my video result](./project_video.mp4)
+There some minor wobbly lines but it does not cause catastrophic failure after smoothing lines. 
+
+Here's a [link to my video result](./p4_advanced_lane_smooth.mp4)
 
 ---
 
@@ -188,7 +190,7 @@ Here's a [link to my video result](./project_video.mp4)
 
 Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
 
-## histogram max will not gurantee to return pleasant lane location start search point center of x
+## First, histogram max will not gurantee to return pleasant lane location start search point center of x
 Noticed that right lane histogram peak actually is not the center of lane due to light lane on gound and cause the incorrect ploy fit. the right lane center is put back to start search.
 ```
 if(rightx_base > 1100):
@@ -205,18 +207,18 @@ incorrect lane extended to the right due to bad fit to the car on right right. H
 After applying the above base determin logic, the correct image projected back:
 ![alt text](./outputs/frame715_correct.jpg)
 
-** second issue is with shadowed lane. particular with frame # 1045 **
+## second issue is with shadowed lane. particular with frame 1045
 
-    This is partially gets solved with help from lane smoother with past 10 frame. otherwise it does not look good.
-    here is before lane smoother: the image is not really not have right lane picked up.
-    
-    ![frame1045](./outputs/frame_1045_no_smooth.jpg)
-    
-    after applying the lane smoother, here is the kind of okay lane.
-    
-    ![frame1045_smooth](./outputs/frame_1045_smoothed.jpg)
-    
-    
+This is partially gets solved with help from lane smoother with past 10 frame. otherwise it does not look good.
+here is before lane smoother: the image is not really not have right lane picked up.
+
+![frame1045](./outputs/frame_1045_no_smooth.jpg)
+
+after applying the lane smoother, here is the kind of okay lane.
+
+![frame1045_smooth](./outputs/frame_1045_smoothed.jpg)
+
+ 
 ** future work if continue when time allowed **
 
 * 1. do further experiments with the color space especially when image has bright ground or shadowed due to strong sunshine. dynamically pick lane search method based on the weather condition.
@@ -224,3 +226,17 @@ After applying the above base determin logic, the correct image projected back:
 * 2. build more adaptive lane average algorithm to smooth out lane detection issue.
 
 * 3. drop certain lane if the center of radius of circle is dramatically change, i.e. center of circle is moved from far left of lane to right of lane. this means the lane detection is not right. use past average lane detection value for current frame.
+
+Particular lane of concern is frame 1035:
+
+Original image frame 1035:
+
+![frame1035](./outputs/frame1035_orig.jpg)
+
+warped and predicted lane without smoothing lane polynomials:
+
+![frame1035_warped](./outputs/frame1035_warped.jpg)
+
+lane with smoothed lane with past 10 lanes.
+
+![frame1035_smoothed](./outputs/frame1035_smoothed.jpg)
