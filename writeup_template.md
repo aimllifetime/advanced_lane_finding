@@ -235,7 +235,7 @@ Original image frame 1035:
 
 warped and predicted lane without smoothing lane polynomials:
 
-![frame1035_warped](./outputs/frame1035_warped.jpg)
+![frame1035_warped](./outputs/frame1035_warped.png)
 
 lane with smoothed lane with past 10 lanes.
 
