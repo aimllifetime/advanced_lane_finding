@@ -119,7 +119,7 @@ Two functions are called based on different conditions:
    
    * else for current frame, use the privous frame's ploy fit to search the pixels around prejected lane by calling frame_lane_detect_calc
    
-![alt text](./outputs/frame715_lane_detection.png)
+![alt text](./outputs/frame715_correct_lane_detection.png)
 
 
 #### 5. Describe how you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
@@ -188,10 +188,18 @@ Here's a [link to my video result](./project_video.mp4)
 
 Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
 
-## histogram max will return an not pleasant lane location of x
+## histogram max will not gurantee to return pleasant lane location start search point center of x
 Noticed that right lane histogram peak actually is not the center of lane due to light lane on gound and cause the incorrect ploy fit. the right lane center is put back to start search.
 ```
 if(rightx_base > 1100):
         rightx_base = 950
 ```
 origin frame 715 in video 
+The historgram actually pick the starting x around 1200. the actual lane start point is around 950. 
+
+![warped](./outputs/frame715_warped.png)
+![incorrect_lane](./outputs/frame715_incorrect_lane.png)
+![incorrect_back](./outputs/frame715_projectedback.png)
+
+After applying the above base determin logic, the correct image projected back:
+![alt text](./outputs/frame715_correct.jpg)
