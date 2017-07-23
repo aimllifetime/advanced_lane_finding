@@ -147,25 +147,12 @@ I implemented this steps in the final_notebook.ipynb after ** following are test
 
 ![alt text](./outputs/frame715_correct.jpg)
 
-#### 7. Here is the complete the steps to create the pipeline for each frame in video:
+#### 7. Here are the complete the steps to create the pipeline for each frame in video:
 
 Following function is in defined in cell in final_notebook.ipynb
 
 **pipeline_process_frame**(frame, mtx, dist, M, Minv, i):
-    ''' 
-    pipeline_process_frame is key video pipeline to process each frame in the video.
-    it calls sequence of key action on the frame to obtained lane and draw it back to original image.
-    Inputs: 
-        frame: an image from video
-        mtx  : camera calibration matrix
-        dist : distortion matrix to undistort an image
-        M    : perspective transform, M, given source and destination points
-        Minv : inverse perspective transform, from dest to source transform
-        i: the ith frame in image.
-    Outputs:
-        result: an image with found lane projected back on original image.
-                print out the left and right curverad as well as offset to lane center in meter
-                negative lane offset means to the center of 
+```
     Here comes the main steps:
     1. undistort the image based on the camera calibration matrix mtx, distortion matrix dist.
     2. create binary image uses furction binary_image_pipeline with color transform and gradient x derivative
@@ -178,7 +165,7 @@ Following function is in defined in cell in final_notebook.ipynb
     7. calculate the curverad for both left and right lane.
     8. display the curverads and offset to original image.
     9. return the final result image.
-
+```
 ---
 
 ### Pipeline (video)
