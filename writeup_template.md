@@ -42,9 +42,17 @@ I then used the output `objpoints` and `imgpoints` to compute the camera calibra
 
 #### 1. Provide an example of a distortion-corrected image.
 
-To demonstrate this step, I will describe how I apply the distortion correction to one of the test images like this one:
-![alt text](./outputs/test2_img.png)
+once we have camera calibration matrix and distortion matrix obtained from the camera calibration, then make a call to cv2.undistort to get undistorted image. 
+First read in an image and convert the BGR to RGB, make a call to cv2.undistort. the image is either written to file or display inn notebook as follows.
 
+![alt text](./outputs/test2_img.png)
+```
+img = cv2.imread('test_images/test2.jpg')
+img_size = (img.shape[1], img.shape[0])
+img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+dst = cv2.undistort(img, mtx, dist, None, mtx)
+cv2.imwrite('outputs/undis_calibration_test2.jpg',dst)
+```
 
 
 #### 2. Describe how you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
@@ -153,7 +161,7 @@ Following function is in defined in cell in final_notebook.ipynb
 
 **pipeline_process_frame**(frame, mtx, dist, M, Minv, i):
 ```
-    Here comes the main steps:
+
     1. undistort the image based on the camera calibration matrix mtx, distortion matrix dist.
     2. create binary image uses furction binary_image_pipeline with color transform and gradient x derivative
     3. create warped image based on the persepective transform to get bird eye image
