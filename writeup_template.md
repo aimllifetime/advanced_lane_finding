@@ -111,22 +111,73 @@ I implemented two lane finding algorithms from class materials and use them unde
 Two functions are called based on different conditions:
    * if it is first frame or every 10 frames, then restart the window based lane search by calling frame_lane_detect
    
-   * else for current frame, use the privous frame's ploy fit search the pixels around prejected lane by calling frame_lane_detect_calc
+   * else for current frame, use the privous frame's ploy fit to search the pixels around prejected lane by calling frame_lane_detect_calc
    
 ![alt text](./outputs/images1057.jpg)
 
 
+#### 5. Describe how you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
+The function ** curverads_centeroff ** in final_notebook.ipynb is used to calculate the left and right curverads. 
+Curverads are calculated as following to get the real world number:
+   * 1. use the ploy fit coefficiencies to find the all pixel x locations
+   * 2. convert the pixel location to real world distance using following fomula:
+       * ym_per_pix = 30/720 # meters per pixel in y dimension
+       * xm_per_pix = 3.7/700 # meters per pixel in x dimension
+   * 3. use polyfit find real world (x, y) to ploynomials
+   * 4. use the fomular to calculate the center distance:
+   
+        ![image](./outputs/curverad_formula.png)
 
-#### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
+The lane center offset is measured by the image center point on x axis minus the center point between two lanes.
+The calculated as follows:
+* center point of image on x axis = 1280/2 where 1280 is image width
+* center point between two lanes:
+    (left_fitx[-1]+right_fitx[-1])/2
+* multiply with pixel to real world distance ratio: xm_per_pix
+so the final fomula is:
+    lane_offset = (1280/2 - (left_fitx[-1]+right_fitx[-1])/2)*xm_per_pix
 
-
+if value is negative, then car offsets to right.
+if value is positive, then car offsets to left.
 
 #### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
-I implemented this step in lines # through # in my code in `yet_another_file.py` in the function `map_lane()`.  Here is an example of my result on a test image:
+I implemented this steps in the final_notebook.ipynb after ** following are testing code for each frame and debug problematic frame. the sequence is same as outlined pipeline_process_frame **:
 
-![alt text][image6]
+![alt text](./outputs/frame715_correct.jpg)
+
+#### 7. Here is the complete the steps to create the pipeline for each frame in video:
+
+Following function is in defined in cell in final_notebook.ipynb
+
+**pipeline_process_frame**(frame, mtx, dist, M, Minv, i):
+    ''' 
+    pipeline_process_frame is key video pipeline to process each frame in the video.
+    it calls sequence of key action on the frame to obtained lane and draw it back to original image.
+    Inputs: 
+        frame: an image from video
+        mtx  : camera calibration matrix
+        dist : distortion matrix to undistort an image
+        M    : perspective transform, M, given source and destination points
+        Minv : inverse perspective transform, from dest to source transform
+        i: the ith frame in image.
+    Outputs:
+        result: an image with found lane projected back on original image.
+                print out the left and right curverad as well as offset to lane center in meter
+                negative lane offset means to the center of 
+    Here comes the main steps:
+    1. undistort the image based on the camera calibration matrix mtx, distortion matrix dist.
+    2. create binary image uses furction binary_image_pipeline with color transform and gradient x derivative
+    3. create warped image based on the persepective transform to get bird eye image
+    4. decide with algorithm to call to search lane for an image.
+        a) if it is first frame or every 10 frames, then restart the window based lane search by calling frame_lane_detect
+        b) else for current frame, use the privous frame's ploy fit search the pixels around prejected lane by calling
+    5. smooth the lane coefficiencies with past 10 records.
+    6. Warp the detected lane boundaries back onto the original image.
+    7. calculate the curverad for both left and right lane.
+    8. display the curverads and offset to original image.
+    9. return the final result image.
 
 ---
 
