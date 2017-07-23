@@ -64,7 +64,7 @@ Here's an example of my output for this step.  (note: this is not actually from 
 
 #### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 
-The code for my perspective transform includes a function called `warper()` (or, for example, in the 3rd code cell of the IPython notebook).  The `warper()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points.  I chose the hardcode the source and destination points in the following manner:
+The code for my perspective transform includes a function called `warper()` in the code cell of the IPython notebook starting ## "Following "warp" function" ## .  The `warper()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points.  I chose the hardcode the source and destination points in the following manner:
 
 ```python
 src = np.float32(
@@ -99,11 +99,29 @@ I verified that my perspective transform was working as expected by drawing the 
 Warped image:
 ![warped](./outputs/warped.png)
 
-#### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
+#### 4. Describe how you identified lane-line pixels and fit their positions with a polynomial?
 
-Then I did some other stuff and fit my lane lines with a 2nd order polynomial kinda like this:
+I implemented two lane finding algorithms from class materials and use them under conditions.
 
-![alt text][image5]
+1. slide window based, which based on the histogram peak points to find out left and right lane x bases. it has 9 windows in height to search all the pixels has none zero from warped image. The center of search box is moving based on the average of x value of points. The function is found in cell: ##frame_lane_detect##
+
+2. prediction based on previous ploy fit parameters. The function is found at: frame_lane_detect_calc
+    This founction does not do the sliding window search on pixel for lane. instead, it use previous ploy fit parameter to predict the lane and search pixel to the lane center +/- margin 100 pixels.
+
+Two functions are called based on different conditions:
+   * if it is first frame or every 10 frames, then restart the window based lane search by calling frame_lane_detect
+   
+   * else for current frame, use the privous frame's ploy fit search the pixels around prejected lane by calling frame_lane_detect_calc
+   
+![alt text](./outputs/images1057.jpg)
+
+
+Noticed that right lane histogram peak actually is not the center of lane due to light lane on gound and cause the incorrect ploy fit. the right lane center is put back to start search.
+```
+if(rightx_base > 1100):
+        rightx_base = 950
+```
+origin frame 715 in video 
 
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
