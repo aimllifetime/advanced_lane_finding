@@ -43,13 +43,11 @@ I then used the output `objpoints` and `imgpoints` to compute the camera calibra
 #### 1. Provide an example of a distortion-corrected image.
 
 once we have camera calibration matrix and distortion matrix obtained from the camera calibration, then make a call to cv2.undistort to get undistorted image. 
-First read in an image and convert the BGR to RGB, make a call to cv2.undistort. the image is either written to file or display inn notebook as follows.
+First read in an image, make a call to cv2.undistort. the image is either written to file or display in notebook as follows.
 
 ![alt text](./outputs/test2_img.png)
 ```
 img = cv2.imread('test_images/test2.jpg')
-img_size = (img.shape[1], img.shape[0])
-img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 dst = cv2.undistort(img, mtx, dist, None, mtx)
 cv2.imwrite('outputs/undis_calibration_test2.jpg',dst)
 ```
@@ -121,7 +119,7 @@ Two functions are called based on different conditions:
    
    * else for current frame, use the privous frame's ploy fit to search the pixels around prejected lane by calling frame_lane_detect_calc
    
-![alt text](./outputs/images1057.jpg)
+![alt text](./outputs/frame715_lane_detection.png)
 
 
 #### 5. Describe how you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
