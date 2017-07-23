@@ -206,12 +206,21 @@ After applying the above base determin logic, the correct image projected back:
 ![alt text](./outputs/frame715_correct.jpg)
 
 ** second issue is with shadowed lane. particular with frame # 1045 **
+
     This is partially gets solved with help from lane smoother with past 10 frame. otherwise it does not look good.
     here is before lane smoother: the image is not really not have right lane picked up.
-    ![frame1045](./outputs/frame_1045.jpg)
+    
+    ![frame1045](./outputs/frame_1045_no_smooth.jpg)
+    
     after applying the lane smoother, here is the kind of okay lane.
-    ![frame1045_smooth](./outputs/frame_1045_smooth.jpg)
+    
+    ![frame1045_smooth](./outputs/frame_1045_smoothed.jpg)
+    
+    
 ** future work if continue when time allowed **
+
 * 1. do further experiments with the color space especially when image has bright ground or shadowed due to strong sunshine. dynamically pick lane search method based on the weather condition.
+
 * 2. build more adaptive lane average algorithm to smooth out lane detection issue.
+
 * 3. drop certain lane if the center of radius of circle is dramatically change, i.e. center of circle is moved from far left of lane to right of lane. this means the lane detection is not right. use past average lane detection value for current frame.
