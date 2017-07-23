@@ -227,16 +227,16 @@ after applying the lane smoother, here is the kind of okay lane.
 
 * 3. drop certain lane if the center of radius of circle is dramatically change, i.e. center of circle is moved from far left of lane to right of lane. this means the lane detection is not right. use past average lane detection value for current frame.
 
-Particular lane of concern is frame 1035:
+Particular lane of concern is frame 1037:
 
-Original image frame 1035:
+Original image frame 1037:
 
-![frame1035](./outputs/frame1035_orig.jpg)
+![frame1035](./outputs/frame1037_orig.jpg)
 
 warped and predicted lane without smoothing lane polynomials:
 
-![frame1035_warped](./outputs/frame1035_warped.png)
+![frame1035_warped](./outputs/frame1037_warped.png)
 
 lane with smoothed lane with past 10 lanes.
 
-![frame1035_smoothed](./outputs/frame1035_smoothed.jpg)
+![frame1035_smoothed](./outputs/frame1037_smoothed.jpg)
