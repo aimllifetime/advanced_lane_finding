@@ -63,9 +63,10 @@ The code is in the "cell" section of funcation name: ** binary_image_pipeline **
      lower = np.array([20,60,60])
      upper = np.array([38,174, 250])
 ```
-* step 2, call selet_white to pick while pixel.
-   ``` lower = np.array([202,202,202])
-       upper = np.array([255,255,255]) 
+* step 2, call selet_white to pick white pixel.
+   ``` 
+     lower = np.array([202,202,202])
+     upper = np.array([255,255,255]) 
     ```
 * step 3, convert to HLS color space
 * step 4, take the derivative in x on l_channel
@@ -226,12 +227,12 @@ this time with enhanced binary_image_pipeline described above, this shadowed fra
 Following are old code result to see where was the problem. last time with smoother and old binary pipeline method.
 ![frame1045](./outputs/frame_1045_no_smooth.jpg)
 
-after applying explore the HSV color space for yellow and picking up white color mask, here is the kind of okay lane.
+Old code: after applying explore the HLS color space for yellow and picking up white color mask, here is the kind of okay lane.
 
 ![frame1045_smooth](./outputs/frame_1045_smoothed.jpg)
 
  
-** future work if continue when time allowed **
+#### ** future work if continue when time allowed **
 
 * 1. do further experiments with the color space especially when image has bright ground or shadowed due to strong sunshine. dynamically pick lane search method based on the weather condition.
 
@@ -239,7 +240,7 @@ after applying explore the HSV color space for yellow and picking up white color
 
 * 3. check out the challenge vidoe and find out it did not work out on the frames under bridge. Need to explore more on those drive conditions. Read the published paper on the various weather conditions such as cloudy, foggy, raining, night vision etc to predict right lanes.
 
-* 3. find out if the center of radius of circle is dramatically change, i.e. center of circle is moved from far left of lane to right of lane. this means the lane detection is not right. use past average lane detection value for current frame.
+* 4. find out if the center of radius of circle is dramatically change, i.e. center of circle is moved from far left of lane to right of lane. this means the lane detection is not right. use past average lane detection value for current frame.
 
 frame 1037 has been solved with latest **binary_image_pipeline** flow:
 
@@ -260,3 +261,5 @@ Latest code ** binary_image_pipeline** works for frame: the lane find find right
 ![frame1037](./outputs/frame1037_correct_lane.png)
 
 ![frame1037](./outputs/frame_1037_good.jpg)
+
+* 5. avoid global variable that could help debug issue quicker. Next project will avoid to use the jupyter notebook.
