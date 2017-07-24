@@ -174,7 +174,7 @@ Following function is in defined in cell in final_notebook.ipynb
     2. create binary image uses furction binary_image_pipeline with color transform and gradient x derivative
     3. create warped image based on the persepective transform to get bird eye image
     4. decide with algorithm to call to search lane for an image.
-        a) if it is first frame or every 10 frames, then restart the window based lane search by calling frame_lane_detect
+        a) if it is first frame or every 4 frames, then restart the window based lane search by calling frame_lane_detect
         b) else for current frame, use the privous frame's ploy fit search the pixels around prejected lane by calling
     5. smooth the lane coefficiencies with past 10 records.
     6. Warp the detected lane boundaries back onto the original image.
@@ -203,7 +203,7 @@ Here I'll talk about the approach I took, what techniques I used, what worked an
 ## First, histogram max will not gurantee to return pleasant lane location start search point center of x
 Noticed that right lane histogram peak actually is not the center of lane due to light lane on gound and cause the incorrect ploy fit. the right lane center is put back to start search.
 ```
-if(rightx_base > 1100):
+if(rightx_base > 1100 or rightx_base < 800):
         rightx_base = 950
 ```
 origin frame 715 in video 
@@ -219,12 +219,11 @@ After applying the above base determin logic, the correct image projected back:
 
 ## second issue is with shadowed lane. particular with frame 1045
 
-This is partially gets solved with help from lane smoother with past 10 frame. otherwise it does not look good.
-here is before lane smoother: the image is not really not have right lane picked up.
-
+this time with enhanced binary_image_pipeline described above, this shadowed frame is progress properly. 
+last time with smoother and old binary pipeline method.
 ![frame1045](./outputs/frame_1045_no_smooth.jpg)
 
-after applying the lane smoother, here is the kind of okay lane.
+after applying explore the HSV color space for yellow and picking up white color mask, here is the kind of okay lane.
 
 ![frame1045_smooth](./outputs/frame_1045_smoothed.jpg)
 
@@ -235,18 +234,23 @@ after applying the lane smoother, here is the kind of okay lane.
 
 * 2. build more adaptive lane average algorithm to smooth out lane detection issue.
 
-* 3. drop certain lane if the center of radius of circle is dramatically change, i.e. center of circle is moved from far left of lane to right of lane. this means the lane detection is not right. use past average lane detection value for current frame.
+* 3. check out the challenge vidoe and find out it did not work out on the frames under bridge. Need to explore more on those drive conditions. Read the published paper on the various weather conditions such as cloudy, foggy, raining, night vision etc to predict right lanes.
 
-Particular lane of concern is frame 1037:
+* 3. find out if the center of radius of circle is dramatically change, i.e. center of circle is moved from far left of lane to right of lane. this means the lane detection is not right. use past average lane detection value for current frame.
+
+frame 1037 has been solved with latest **binary_image_pipeline** flow:
 
 Original image frame 1037:
 
 ![frame1035](./outputs/frame1037_orig.jpg)
 
-warped and predicted lane without smoothing lane polynomials:
+old warped and predicted lane without smoothing lane polynomials:
 
 ![frame1035_warped](./outputs/frame1037_warped.png)
 
 lane with smoothed lane with past 10 lanes.
 
 ![frame1035_smoothed](./outputs/frame1037_smoothed.jpg)
+
+latest working frame: the lane find find right lane. no high need bet on the smoother.
+![frame1037](./output/frame1037_correct_lane.png)
