@@ -97,12 +97,12 @@ dest = np.float32(
 
 This resulted in the following source and destination points:
 
-| Source        | Destination   | 
-|:-------------:|:-------------:| 
-| 577, 469      | 310, 0        | 
-| 723, 469      | 950, 0      |
-| 329, 667     | 310, 667      |
-| 1081, 667      | 950 , 667        |
+| Source        | Destination   |  changed to |
+|:-------------:|:-------------:|:-------:|
+| 577, 469      | 310, 0        | 320, 0 |
+| 723, 469      | 950, 0      | 920, 0|
+| 329, 667     | 310, 667      | 310, 667 |
+| 1081, 667      | 950 , 667        | 950 , 667 | 
 
 The src points are obtained by locating the four points on the picture. calculate the mouse point offset of 78 in "shift+command+4" on Mac
 The dest points are fixed around the two centers of histogram: 310 and 950
