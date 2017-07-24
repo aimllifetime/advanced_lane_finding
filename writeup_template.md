@@ -51,21 +51,31 @@ img = cv2.imread('test_images/test2.jpg')
 dst = cv2.undistort(img, mtx, dist, None, mtx)
 cv2.imwrite('outputs/undis_calibration_test2.jpg',dst)
 ```
-
+In the later video frame pipeline, the found ploygon is projected backed onto the undistorted image.
 
 #### 2. Describe how you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
 I used a combination of S channel color and L channel x derivative gradient plus thresholds to generate a binary image.  
 The code is in the "cell" section of funcation name: ** binary_image_pipeline ** in final_notebook.ipynb
 
-* step 1, the image is converted to HLS color space
-* step 2, take the derivative in x on l_channel
-* step 3, normalize the pixel value into range of (0, 255)
-* step 4, apply the threshold of s_thresh(20, 100)
-* step 5, apply threshold(170, 255) on s_channel data
-* step 6, build combined color image where s_binary pixcel is of 1 or l_channel pixel is of 1
+* step 1, call select_yellow to pick yellow pixel. the image is converted to HSV color space and applied the threshold.
+```
+     lower = np.array([20,60,60])
+     upper = np.array([38,174, 250])
+```
+* step 2, call selet_white to pick while pixel.
+   ``` lower = np.array([202,202,202])
+       upper = np.array([255,255,255]) 
+    ```
+* step 3, convert to HLS color space
+* step 4, take the derivative in x on l_channel
+* step 5, normalize the pixel value into range of (0, 255)
+* step 6, apply threshold(20, 100) on l_channel sobel derivative data
+* step 7, build combined color image where l channel sobel x derivative is 1, or yellow mask or white mask.
+* step 8, apply the region_of_interest to select pixel only interested to lane finding.
+          four vertices: [(0,imshape[0]),(525, 432), (750, 432), (imshape[1],imshape[0])]
 
-Here's an example of my output for this step.  (note: this is not actually from one of the test images)
+Here's an example of my output for this step for frame 1037.  (note: this is not actually from one of the test images)
 ![alt text](./outputs/binary_image_pipeline.png)
 
 #### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
@@ -79,20 +89,20 @@ src = np.float32(
      [329, 667],
      [1081, 667]])
 dest = np.float32(
-     [[310, 0],
-      [950, 0],
+     [[320, 0],
+      [920, 0],
       [310, 667],
      [950, 667]])
 ```
 
 This resulted in the following source and destination points:
 
-| Source        | Destination   | 
-|:-------------:|:-------------:| 
-| 577, 469      | 310, 0        | 
-| 723, 469      | 950, 0      |
-| 329, 667     | 310, 667      |
-| 1081, 667      | 950 , 667        |
+| Source        | Destination   |  changed to |
+|:-------------:|:-------------:|:-------:|
+| 577, 469      | 310, 0        | 320, 0 |
+| 723, 469      | 950, 0      | 920, 0|
+| 329, 667     | 310, 667      | 310, 667 |
+| 1081, 667      | 950 , 667        | 950 , 667 | 
 
 The src points are obtained by locating the four points on the picture. calculate the mouse point offset of 78 in "shift+command+4" on Mac
 The dest points are fixed around the two centers of histogram: 310 and 950
