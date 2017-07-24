@@ -232,7 +232,7 @@ Old code: after applying explore the HLS color space for yellow and picking up w
 ![frame1045_smooth](./outputs/frame_1045_smoothed.jpg)
 
  
-#### ** future work if continue when time allowed **
+### future work if continue when time allowed
 
 * 1. do further experiments with the color space especially when image has bright ground or shadowed due to strong sunshine. dynamically pick lane search method based on the weather condition.
 
