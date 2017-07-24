@@ -129,7 +129,7 @@ Two functions are called based on different conditions:
    
    * else for current frame, use the privous frame's ploy fit to search the pixels around prejected lane by calling frame_lane_detect_calc
    
-![alt text](./outputs/frame715_correct_lane_detection.png)
+![alt text](./outputs/frame715_correct.jpg)
 
 
 #### 5. Describe how you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
@@ -220,7 +220,10 @@ After applying the above base determin logic, the correct image projected back:
 ## second issue is with shadowed lane. particular with frame 1045
 
 this time with enhanced binary_image_pipeline described above, this shadowed frame is progress properly. 
-last time with smoother and old binary pipeline method.
+
+![frame1045](./outputs/frame_1045_good.jpg)
+
+Following are old code result to see where was the problem. last time with smoother and old binary pipeline method.
 ![frame1045](./outputs/frame_1045_no_smooth.jpg)
 
 after applying explore the HSV color space for yellow and picking up white color mask, here is the kind of okay lane.
@@ -253,4 +256,5 @@ lane with smoothed lane with past 10 lanes.
 ![frame1035_smoothed](./outputs/frame1037_smoothed.jpg)
 
 latest working frame: the lane find find right lane. no high need bet on the smoother.
-![frame1037](./output/frame1037_correct_lane.png)
+
+![frame1037](./outputs/frame1037_correct_lane.png)
