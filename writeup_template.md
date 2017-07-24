@@ -217,7 +217,7 @@ incorrect lane extended to the right due to bad fit to the car on right right. H
 After applying the above base determin logic, the correct image projected back:
 ![alt text](./outputs/frame715_correct.jpg)
 
-## second issue is with shadowed lane. particular with frame 1045
+## second issue is with shadowed lane. particular with frame 1045(now solved)
 
 this time with enhanced binary_image_pipeline described above, this shadowed frame is progress properly. 
 
@@ -247,14 +247,16 @@ Original image frame 1037:
 
 ![frame1035](./outputs/frame1037_orig.jpg)
 
-old warped and predicted lane without smoothing lane polynomials:
+old code generated the warped and predicted lane without smoothing lane polynomials:
 
 ![frame1035_warped](./outputs/frame1037_warped.png)
 
-lane with smoothed lane with past 10 lanes.
+old code for lane with smoothed lane with past 10 lanes.
 
 ![frame1035_smoothed](./outputs/frame1037_smoothed.jpg)
 
-latest working frame: the lane find find right lane. no high need bet on the smoother.
+Latest code ** binary_image_pipeline** works for frame: the lane find find right lane. no high need bet on the smoother.
 
 ![frame1037](./outputs/frame1037_correct_lane.png)
+
+![frame1037](./outputs/frame_1037_good.jpg)
